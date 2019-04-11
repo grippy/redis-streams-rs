@@ -6,7 +6,6 @@ use crate::types::{
 
 use redis::{cmd, ConnectionLike, FromRedisValue, RedisResult, ToRedisArgs};
 
-
 /// Implementation of all redis stream commands.
 ///
 pub trait StreamCommands: ConnectionLike + Sized {

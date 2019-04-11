@@ -2,17 +2,6 @@ use redis::{from_redis_value, FromRedisValue, RedisResult, RedisWrite, ToRedisAr
 
 use std::collections::HashMap;
 
-
-// fn itoa_usize_fmt(i: usize) -> Vec<u8> {
-//     let mut buffer = itoa::Buffer::new();
-//     let printed = buffer.format(1234);
-//     assert_eq!(printed, "1234");
-// }
-
-
-
-
-
 // Stream Maxlen Enum
 
 /// Utility enum for passing `MAXLEN [= or ~] [COUNT]`

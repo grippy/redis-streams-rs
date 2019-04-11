@@ -33,7 +33,7 @@
 #[doc(hidden)]
 pub extern crate redis;
 
-pub use redis::{Commands,Connection,RedisResult};
+pub use redis::{Commands, Connection, RedisResult};
 
 pub use commands::StreamCommands;
 
