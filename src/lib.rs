@@ -30,9 +30,10 @@
 //!
 #![deny(non_camel_case_types)]
 
-extern crate redis;
+#[doc(hidden)]
+pub extern crate redis;
 
-pub use redis::*;
+pub use redis::{Commands,Connection,RedisResult};
 
 pub use commands::StreamCommands;
 

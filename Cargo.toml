@@ -8,6 +8,6 @@ edition = "2018"
 path = "../redis-rs"
 
 [dev-dependencies]
-rand = "0.4"
+rand = "0.6"
 net2 = "0.2"
 futures = "0.1"

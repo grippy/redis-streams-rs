@@ -2,6 +2,17 @@ use redis::{from_redis_value, FromRedisValue, RedisResult, RedisWrite, ToRedisAr
 
 use std::collections::HashMap;
 
+
+// fn itoa_usize_fmt(i: usize) -> Vec<u8> {
+//     let mut buffer = itoa::Buffer::new();
+//     let printed = buffer.format(1234);
+//     assert_eq!(printed, "1234");
+// }
+
+
+
+
+
 // Stream Maxlen Enum
 
 /// Utility enum for passing `MAXLEN [= or ~] [COUNT]`
@@ -24,7 +35,7 @@ impl ToRedisArgs for StreamMaxlen {
         };
         out.write_arg("MAXLEN".as_bytes());
         out.write_arg(ch.as_bytes());
-        out.write_arg(format!("{}", val).as_bytes());
+        val.write_redis_args(out);
     }
 }
 
@@ -315,11 +326,11 @@ impl StreamId {
         let mut stream_id = StreamId::default();
         match *v {
             Value::Bulk(ref values) => {
-                if values.len() >= 1 {
-                    stream_id.id = from_redis_value(&values[0])?;
+                if let Some(v) = values.get(0) {
+                    stream_id.id = from_redis_value(&v)?;
                 }
-                if values.len() >= 2 {
-                    stream_id.map = from_redis_value(&values[1])?;
+                if let Some(v) = values.get(1) {
+                    stream_id.map = from_redis_value(&v)?;
                 }
             }
             _ => {}
