@@ -1,0 +1,13 @@
+[package]
+name = "redis_streams"
+version = "0.1.0"
+authors = ["grippy <gmelton@gmail.com>"]
+edition = "2018"
+
+[dependencies.redis]
+path = "../redis-rs"
+
+[dev-dependencies]
+rand = "0.6"
+net2 = "0.2"
+futures = "0.1"
