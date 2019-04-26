@@ -277,7 +277,6 @@ fn test_assorted_2() {
     // add more and read so we can test xpending
     let _: RedisResult<String> = con.xadd("k99", "1001-0", &[("i", "j"), ("k", "l")]);
     let _: RedisResult<String> = con.xadd("k99", "1001-1", &[("m", "n"), ("o", "p")]);
-
     let _: StreamReadReply = con
         .xread_options(
             &["k99"],
