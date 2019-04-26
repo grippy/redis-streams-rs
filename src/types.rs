@@ -176,7 +176,7 @@ impl ToRedisArgs for StreamReadOptions {
 /// [`xread`]: ./trait.StreamCommands.html#method.xread
 /// [`xread_options`]: ./trait.StreamCommands.html#method.xread_options
 ///
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct StreamReadReply {
     pub keys: Vec<StreamKey>,
 }
@@ -190,7 +190,7 @@ pub struct StreamReadReply {
 /// [`xrevrange_count`]: ./trait.StreamCommands.html#method.xrevrange_count
 /// [`xrevrange_all`]: ./trait.StreamCommands.html#method.xrevrange_all
 ///
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct StreamRangeReply {
     pub ids: Vec<StreamId>,
 }
@@ -199,7 +199,7 @@ pub struct StreamRangeReply {
 ///
 /// [`xclaim`]: ./trait.StreamCommands.html#method.xclaim
 ///
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct StreamClaimReply {
     pub ids: Vec<StreamId>,
 }
@@ -208,7 +208,7 @@ pub struct StreamClaimReply {
 ///
 /// [`xpending`]: ./trait.StreamCommands.html#method.xpending
 ///
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum StreamPendingReply {
     Empty,
     Data(StreamPendingData),
@@ -230,7 +230,7 @@ impl StreamPendingReply {
 }
 
 /// Inner reply type when an [`xpending`] command has data.
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct StreamPendingData {
     pub count: usize,
     pub start_id: String,
@@ -244,7 +244,7 @@ pub struct StreamPendingData {
 /// [`xpending_count`]: ./trait.StreamCommands.html#method.xpending_count
 /// [`xpending_consumer_count`]: ./trait.StreamCommands.html#method.xpending_consumer_count
 ///
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct StreamPendingCountReply {
     pub ids: Vec<StreamPendingId>,
 }
@@ -253,7 +253,7 @@ pub struct StreamPendingCountReply {
 ///
 /// [`xinfo_stream`]: ./trait.StreamCommands.html#method.xinfo_stream
 ///
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct StreamInfoStreamReply {
     pub last_generated_id: String,
     pub radix_tree_keys: usize,
@@ -267,7 +267,7 @@ pub struct StreamInfoStreamReply {
 ///
 /// [`xinfo_consumer`]: ./trait.StreamCommands.html#method.xinfo_consumer
 ///
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct StreamInfoConsumersReply {
     pub consumers: Vec<StreamInfoConsumer>,
 }
@@ -276,7 +276,7 @@ pub struct StreamInfoConsumersReply {
 ///
 /// [`xinfo_groups`]: ./trait.StreamCommands.html#method.xinfo_groups
 ///
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct StreamInfoGroupsReply {
     pub groups: Vec<StreamInfoGroup>,
 }
@@ -285,7 +285,7 @@ pub struct StreamInfoGroupsReply {
 ///
 /// [`xinfo_consumers`]: ./trait.StreamCommands.html#method.xinfo_consumers
 ///
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct StreamInfoConsumer {
     pub name: String,
     pub pending: usize,
@@ -296,7 +296,7 @@ pub struct StreamInfoConsumer {
 ///
 /// [`xinfo_groups`]: ./trait.StreamCommands.html#method.xinfo_groups
 ///
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct StreamInfoGroup {
     pub name: String,
     pub consumers: usize,
@@ -305,7 +305,7 @@ pub struct StreamInfoGroup {
 }
 
 /// Represents a pending message parsed from `xpending` methods.
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct StreamPendingId {
     pub id: String,
     pub consumer: String,
@@ -314,7 +314,7 @@ pub struct StreamPendingId {
 }
 
 /// Represents a stream `key` and its `id`'s parsed from `xread` methods.
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct StreamKey {
     pub key: String,
     pub ids: Vec<StreamId>,
@@ -327,7 +327,7 @@ impl StreamKey {
 }
 
 /// Represents a stream `id` and its field/values as a `HashMap`
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct StreamId {
     pub id: String,
     pub map: HashMap<String, Value>,
