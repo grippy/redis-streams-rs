@@ -228,6 +228,16 @@ fn test_assorted_2() {
     let _: RedisResult<String> = con.xadd("k99", "1000-0", &[("a", "b"), ("c", "d")]);
     let _: RedisResult<String> = con.xadd("k99", "1000-1", &[("e", "f"), ("g", "h")]);
 
+    // test empty PEL
+    let empty_reply: StreamPendingReply = con.xpending("k99", "g99").unwrap();
+
+    assert_eq!(empty_reply.count(), 0);
+    if let StreamPendingReply::Empty = empty_reply {
+        // looks good
+    } else {
+        panic!("Expected StreamPendingReply::Empty but got Data");
+    }
+
     // passing options  w/ group triggers XREADGROUP
     // using ID=">" means all undelivered ids
     // otherwise, ID="0 | ms-num" means all pending already
@@ -267,6 +277,7 @@ fn test_assorted_2() {
     // add more and read so we can test xpending
     let _: RedisResult<String> = con.xadd("k99", "1001-0", &[("i", "j"), ("k", "l")]);
     let _: RedisResult<String> = con.xadd("k99", "1001-1", &[("m", "n"), ("o", "p")]);
+
     let _: StreamReadReply = con
         .xread_options(
             &["k99"],
@@ -277,12 +288,18 @@ fn test_assorted_2() {
 
     // call xpending here...
     // this has a different reply from what the count variations return
-    let reply: StreamPendingReply = con.xpending("k99", "g99").unwrap();
-    assert_eq!(reply.count, 3);
-    assert_eq!(reply.start_id, "1000-1");
-    assert_eq!(reply.end_id, "1001-1");
-    assert_eq!(reply.consumers.len(), 1);
-    assert_eq!(reply.consumers[0].name, "c99");
+    let data_reply: StreamPendingReply = con.xpending("k99", "g99").unwrap();
+
+    assert_eq!(data_reply.count(), 3);
+
+    if let StreamPendingReply::Data(data) = data_reply {
+        assert_eq!(data.start_id, "1000-1");
+        assert_eq!(data.end_id, "1001-1");
+        assert_eq!(data.consumers.len(), 1);
+        assert_eq!(data.consumers[0].name, "c99");
+    } else {
+        panic!("Expected StreamPendingReply::Data but got Empty");
+    }
 
     // both count variations have the same reply types
     let reply: StreamPendingCountReply = con.xpending_count("k99", "g99", "-", "+", 10).unwrap();
@@ -346,10 +363,12 @@ fn test_xclaim() {
     // grab all pending ids for this key...
     // we should 9 in c1 and 1 in c2
     let reply: StreamPendingReply = con.xpending("k1", "g1").unwrap();
-    assert_eq!(reply.consumers[0].name, "c1");
-    assert_eq!(reply.consumers[0].pending, 9);
-    assert_eq!(reply.consumers[1].name, "c2");
-    assert_eq!(reply.consumers[1].pending, 1);
+    if let StreamPendingReply::Data(data) = reply {
+        assert_eq!(data.consumers[0].name, "c1");
+        assert_eq!(data.consumers[0].pending, 9);
+        assert_eq!(data.consumers[1].name, "c2");
+        assert_eq!(data.consumers[1].pending, 1);
+    }
 
     // sleep for 5ms
     sleep(Duration::from_millis(5));
@@ -369,8 +388,10 @@ fn test_xclaim() {
 
     let reply: StreamPendingReply = con.xpending("k1", "g1").unwrap();
     // we should have 9 w/ c1 and 1 w/ c3 now
-    assert_eq!(reply.consumers[1].name, "c3");
-    assert_eq!(reply.consumers[1].pending, 1);
+    if let StreamPendingReply::Data(data) = reply {
+        assert_eq!(data.consumers[1].name, "c3");
+        assert_eq!(data.consumers[1].pending, 1);
+    }
 
     // sleep for 5ms
     sleep(Duration::from_millis(5));

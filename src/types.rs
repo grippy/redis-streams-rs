@@ -1,6 +1,7 @@
 use redis::{from_redis_value, FromRedisValue, RedisResult, RedisWrite, ToRedisArgs, Value};
 
 use std::collections::HashMap;
+use std::io::{Error, ErrorKind};
 
 // Stream Maxlen Enum
 
@@ -207,8 +208,30 @@ pub struct StreamClaimReply {
 ///
 /// [`xpending`]: ./trait.StreamCommands.html#method.xpending
 ///
+#[derive(Debug)]
+pub enum StreamPendingReply {
+    Empty,
+    Data(StreamPendingData),
+}
+
+impl Default for StreamPendingReply {
+    fn default() -> StreamPendingReply {
+        StreamPendingReply::Empty
+    }
+}
+
+impl StreamPendingReply {
+    pub fn count(&self) -> usize {
+        match self {
+            StreamPendingReply::Empty => 0,
+            StreamPendingReply::Data(x) => x.count,
+        }
+    }
+}
+
+/// Inner reply type when an [`xpending`] command has data.
 #[derive(Default, Debug)]
-pub struct StreamPendingReply {
+pub struct StreamPendingData {
     pub count: usize,
     pub start_id: String,
     pub end_id: String,
@@ -406,20 +429,45 @@ impl FromRedisValue for StreamClaimReply {
 
 impl FromRedisValue for StreamPendingReply {
     fn from_redis_value(v: &Value) -> RedisResult<Self> {
-        let parts: (usize, String, String, Vec<Vec<String>>) = from_redis_value(v)?;
-        let mut reply = StreamPendingReply::default();
-        reply.count = parts.0.to_owned() as usize;
-        reply.start_id = parts.1.to_owned();
-        reply.end_id = parts.2.to_owned();
-        for consumer in &parts.3 {
-            let mut info = StreamInfoConsumer::default();
-            info.name = consumer[0].to_owned();
-            if let Ok(v) = consumer[1].to_owned().parse::<usize>() {
-                info.pending = v;
+        let parts: (usize, Option<String>, Option<String>, Vec<Vec<String>>) = from_redis_value(v)?;
+        let count = parts.0.to_owned() as usize;
+
+        if count == 0 {
+            Ok(StreamPendingReply::Empty)
+        } else {
+            let mut result = StreamPendingData::default();
+
+            let start_id = match parts.1.to_owned() {
+                Some(start) => Ok(start),
+                None => Err(Error::new(
+                    ErrorKind::Other,
+                    "IllegalState: Non-zero pending expects start id",
+                )),
+            }?;
+
+            let end_id = match parts.2.to_owned() {
+                Some(end) => Ok(end),
+                None => Err(Error::new(
+                    ErrorKind::Other,
+                    "IllegalState: Non-zero pending expects end id",
+                )),
+            }?;
+
+            result.count = count;
+            result.start_id = start_id;
+            result.end_id = end_id;
+
+            for consumer in &parts.3 {
+                let mut info = StreamInfoConsumer::default();
+                info.name = consumer[0].to_owned();
+                if let Ok(v) = consumer[1].to_owned().parse::<usize>() {
+                    info.pending = v;
+                }
+                result.consumers.push(info);
             }
-            reply.consumers.push(info);
+
+            Ok(StreamPendingReply::Data(result))
         }
-        Ok(reply)
     }
 }
 
