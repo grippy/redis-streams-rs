@@ -14,7 +14,7 @@ use std::str;
 use std::thread::sleep;
 use std::time::Duration;
 
-use support::*;
+use crate::support::*;
 
 mod support;
 
