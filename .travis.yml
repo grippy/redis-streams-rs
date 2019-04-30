@@ -1,3 +1,17 @@
 language: rust
+
 rust:
   - stable
+
+cache: cargo
+
+addons:
+  apt:
+    packages:
+      - redis-server
+
+script:
+  - make test-all
+  - |
+    rustup component add rustfmt
+    cargo fmt --all -- --check
