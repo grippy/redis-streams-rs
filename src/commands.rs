@@ -78,6 +78,26 @@ pub trait StreamCommands: ConnectionLike + Sized {
             .query(self)
     }
 
+    // XADD key [MAXLEN [~|=] <count>] <ID or *> [rust BTreeMap] ...
+
+    /// BTreeMap variant for adding a stream message while capping the stream at a maxlength.
+    ///
+    #[inline]
+    fn xadd_maxlen_map<K: ToRedisArgs, ID: ToRedisArgs, BTM: ToRedisArgs, RV: FromRedisValue>(
+        &mut self,
+        key: K,
+        maxlen: StreamMaxlen,
+        id: ID,
+        map: BTM,
+    ) -> RedisResult<RV> {
+        cmd("XADD")
+            .arg(key)
+            .arg(maxlen)
+            .arg(id)
+            .arg(map)
+            .query(self)
+    }
+
     // XCLAIM <key> <group> <consumer> <min-idle-time> [<ID-1> <ID-2>]
 
     /// Claim pending, unacked messages, after some period of time,

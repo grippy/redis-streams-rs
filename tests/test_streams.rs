@@ -311,6 +311,28 @@ fn test_assorted_2() {
 }
 
 #[test]
+fn test_xadd_maxlen_map() {
+    let ctx = TestContext::new();
+    let mut con = ctx.connection();
+
+    for i in 0..10 {
+        let mut map: BTreeMap<&str, &str> = BTreeMap::new();
+        let idx = i.to_string();
+        map.insert("idx", &idx);
+        let _: RedisResult<String> =
+            con.xadd_maxlen_map("maxlen_map", StreamMaxlen::Equals(3), "*", map);
+    }
+
+    let result: RedisResult<usize> = con.xlen("maxlen_map");
+    assert_eq!(result, Ok(3));
+    let reply: StreamRangeReply = con.xrange_all("maxlen_map").unwrap();
+
+    assert_eq!(reply.ids[0].get("idx"), Some("7".to_string()));
+    assert_eq!(reply.ids[1].get("idx"), Some("8".to_string()));
+    assert_eq!(reply.ids[2].get("idx"), Some("9".to_string()));
+}
+
+#[test]
 fn test_xclaim() {
     // Tests the following commands....
     // xclaim
