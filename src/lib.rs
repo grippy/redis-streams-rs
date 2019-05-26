@@ -29,7 +29,17 @@
 #![deny(non_camel_case_types)]
 
 #[doc(hidden)]
-pub use redis::{Commands, Connection, RedisResult};
+pub use redis::{
+    Commands,
+    Connection,
+    Client,
+    ErrorKind,
+    RedisResult,
+    RedisError,
+    ToRedisArgs,
+    FromRedisValue,
+    Value
+};
 
 pub use crate::commands::StreamCommands;
 
