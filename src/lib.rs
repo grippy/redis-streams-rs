@@ -30,15 +30,8 @@
 
 #[doc(hidden)]
 pub use redis::{
-    Commands,
-    Connection,
-    Client,
-    ErrorKind,
-    RedisResult,
-    RedisError,
-    ToRedisArgs,
-    FromRedisValue,
-    Value
+    Client, Commands, Connection, ErrorKind, FromRedisValue, RedisError, RedisResult, ToRedisArgs,
+    Value,
 };
 
 pub use crate::commands::StreamCommands;
