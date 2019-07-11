@@ -111,6 +111,8 @@ pub struct StreamReadOptions {
     block: Option<usize>,
     /// Set the COUNT <count> cmd arg.
     count: Option<usize>,
+    /// Set the NOACK cmd arg.
+    noack: Option<bool>,
     /// Set the GROUP <groupname> <consumername> cmd arg.
     /// This option will toggle the cmd from XREAD to XREADGROUP.
     group: Option<(Vec<Vec<u8>>, Vec<Vec<u8>>)>,
@@ -119,6 +121,11 @@ pub struct StreamReadOptions {
 impl StreamReadOptions {
     pub fn read_only(&self) -> bool {
         self.group.is_none()
+    }
+
+    pub fn noack(mut self) -> Self {
+        self.noack = Some(true);
+        self
     }
 
     pub fn block(mut self, ms: usize) -> Self {
@@ -160,6 +167,11 @@ impl ToRedisArgs for StreamReadOptions {
         }
 
         if let Some(ref group) = self.group {
+            // noack is only available w/ xreadgroup
+            if let Some(true) = self.noack {
+                out.write_arg("NOACK".as_bytes());
+            }
+
             out.write_arg("GROUP".as_bytes());
             for i in &group.0 {
                 out.write_arg(i);

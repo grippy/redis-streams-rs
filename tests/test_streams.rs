@@ -84,6 +84,7 @@ fn test_cmd_options() {
     // test read options
 
     let opts = StreamReadOptions::default()
+        .noack()
         .block(100)
         .count(200)
         .group("group-name", "consumer-name");
@@ -94,10 +95,16 @@ fn test_cmd_options() {
         "100",
         "COUNT",
         "200",
+        "NOACK",
         "GROUP",
         "group-name",
         "consumer-name"
     );
+
+    // should skip noack because of missing group(,)
+    let opts = StreamReadOptions::default().noack().block(100).count(200);
+
+    assert_args!(&opts, "BLOCK", "100", "COUNT", "200");
 }
 
 #[test]

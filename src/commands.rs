@@ -515,7 +515,7 @@ pub trait StreamCommands: ConnectionLike + Sized {
     // XREAD [BLOCK <milliseconds>] [COUNT <count>]
     //       STREAMS key_1 key_2 ... key_N
     //       ID_1 ID_2 ... ID_N
-    // XREADGROUP [BLOCK <milliseconds>] [COUNT <count>] [GROUP group-name consumer-name]
+    // XREADGROUP [BLOCK <milliseconds>] [COUNT <count>] [NOACK] [GROUP group-name consumer-name]
     //       STREAMS key_1 key_2 ... key_N
     //       ID_1 ID_2 ... ID_N
 
@@ -537,7 +537,7 @@ pub trait StreamCommands: ConnectionLike + Sized {
     /// // Read all undelivered messages for a given
     /// // consumer group. Be advised: the consumer group must already
     /// // exist before making this call. Also note: we're passing
-    /// // '>' as the id here, which means all underlivered messages.
+    /// // '>' as the id here, which means all undelivered messages.
     ///
     /// let opts = StreamReadOptions::default()
     ///     .group("group-1", "consumer-1");
