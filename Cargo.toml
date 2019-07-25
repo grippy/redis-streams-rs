@@ -5,9 +5,8 @@ authors = ["grippy <gmelton@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-# waiting for this commit to be released on crates.io
-# https://github.com/mitsuhiko/redis-rs/commit/ef1b68e810d90bff55791ee2fec935b908e3bfd0
-redis = {git = "https://github.com/mitsuhiko/redis-rs.git"}
+# redis = {git = "https://github.com/mitsuhiko/redis-rs.git"}
+redis = "0.11.0"
 
 [dev-dependencies]
 rand = "0.6"

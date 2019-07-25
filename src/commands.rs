@@ -104,7 +104,7 @@ pub trait StreamCommands: ConnectionLike + Sized {
     /// currently checked out by another consumer.
     ///
     /// This method only accepts the must-have arguments for claiming messages.
-    /// If optional arugments are required, see `xclaim_options` below.
+    /// If optional arguments are required, see `xclaim_options` below.
     ///
     #[inline]
     fn xclaim<K: ToRedisArgs, G: ToRedisArgs, C: ToRedisArgs, MIT: ToRedisArgs, ID: ToRedisArgs>(
@@ -355,13 +355,13 @@ pub trait StreamCommands: ConnectionLike + Sized {
 
     // XPENDING <key> <group> [<start> <stop> <count> [<consumer>]]
 
-    /// This is basic version of making XPENDING command calls which only
+    /// This is a basic version of making XPENDING command calls which only
     /// passes a stream `key` and consumer `group` and it
     /// returns details about which consumers have pending messages
     /// that haven't been acked.
     ///
     /// You can use this method along with
-    /// `xclaim` or `xclaim_options` for determinging which messages
+    /// `xclaim` or `xclaim_options` for determining which messages
     /// need to be retried.
     ///
     /// Take note of the StreamPendingReply return type.

@@ -37,7 +37,7 @@ impl ToRedisArgs for StreamMaxlen {
 pub struct StreamClaimOptions {
     /// Set IDLE <milliseconds> cmd arg.
     idle: Option<usize>,
-    /// Set IDLE <mstime> cmd arg.
+    /// Set TIME <mstime> cmd arg.
     time: Option<usize>,
     /// Set RETRYCOUNT <count> cmd arg.
     retry: Option<usize>,
@@ -250,7 +250,7 @@ pub struct StreamPendingData {
     pub consumers: Vec<StreamInfoConsumer>,
 }
 
-/// Reply type use with [`xpending_count`] and
+/// Reply type used with [`xpending_count`] and
 /// [`xpending_consumer_count`] commands.
 ///
 /// [`xpending_count`]: ./trait.StreamCommands.html#method.xpending_count

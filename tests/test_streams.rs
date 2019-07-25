@@ -435,7 +435,7 @@ fn test_xclaim() {
             StreamClaimOptions::default().with_force().with_justid(),
         )
         .unwrap();
-    // we just claimed the origin 10 ids
+    // we just claimed the original 10 ids
     // and only returned the ids
     assert_eq!(claimed.len(), 10);
 }
