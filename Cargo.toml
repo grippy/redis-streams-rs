@@ -1,11 +1,21 @@
 [package]
-name = "redis_streams"
+name = "redis-streams"
+description = "Redis streams commands"
 version = "0.1.0"
-authors = ["grippy <gmelton@gmail.com>"]
+authors = ["Greg Melton <gmelton@gmail.com>"]
+readme = "README.md"
+keywords = ["redis", "streams", "database"]
+repository = "https://github.com/grippy/redis-streams-rs.git"
+documentation = ""
+categories = []
+license = "MIT"
 edition = "2018"
 
+[lib]
+name = "redis_streams"
+path = "src/lib.rs"
+
 [dependencies]
-# redis = {git = "https://github.com/mitsuhiko/redis-rs.git"}
 redis = "0.11.0"
 
 [dev-dependencies]
