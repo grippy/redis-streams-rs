@@ -1,3 +1,7 @@
+# Note
+
+This project will be archived soon. All of the functionality here was [rolled into redis-rs](https://github.com/mitsuhiko/redis-rs/pull/319). Thanks @Terkwood for making this happen!
+
 # redis-streams-rs
 
 [![Build Status](https://travis-ci.org/grippy/redis-streams-rs.svg?branch=master)](https://travis-ci.org/grippy/redis-streams-rs)
